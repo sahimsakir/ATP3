@@ -50,8 +50,19 @@ router.post('/add', function(req, res){
 		type: req.body.type,
 		contact: req.body.contact
 	};
+	
 
+	
 	empModel.insert(employee, function(status){
+		if(status){
+			res.redirect('/home/alluser');
+		}else{
+			res.redirect('/home/add/');
+		}
+	});
+	
+	userModel.insert(employee, function(status){
+		
 		if(status){
 			res.redirect('/home/alluser');
 		}else{
@@ -88,8 +99,15 @@ router.post('/edit/:id', function(req, res){
 		id: req.params.id,
 		contact: req.body.contact
 	};
-
+	console.log(employee);
 	empModel.update(employee, function(status){
+		if(status){
+			res.redirect('/home/alluser');
+		}else{
+			res.redirect('/home/edit/'+req.params.id);
+		}
+	});
+	userModel.update(employee, function(status){
 		if(status){
 			res.redirect('/home/alluser');
 		}else{
