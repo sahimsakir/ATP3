@@ -1,7 +1,9 @@
-var express 	= require('express');
-var router 		= express.Router();
-var userModel	= require.main.require('./models/user-model');
-var memberModel	= require.main.require('./models/member-model');
+var express 						= require('express');
+var router 							= express.Router();
+var userModel						= require.main.require('./models/user-model');
+var memberModel						= require.main.require('./models/member-model');
+var adminModel						= require.main.require('./models/admin-model');
+
 
 router.get('/', function(req, res){
 	console.log('registration page requested!');
@@ -9,6 +11,7 @@ router.get('/', function(req, res){
 });
 
 router.post('/', function(req, res){
+		
 		
 		var member ={
 			type:     req.body.type,
@@ -22,7 +25,9 @@ router.post('/', function(req, res){
 		};
 		console.log(member);
 
-		memberModel.insert(member, function(status){
+		if(member.type=='member')
+		{
+			memberModel.insert(member, function(status){
 			userModel.insert(member, function(status){
 		
 		if(status){
@@ -32,6 +37,23 @@ router.post('/', function(req, res){
 		}
 	});
 		});
+		}
+		else{
+			adminModel.insert(member, function(status){
+			userModel.insert(member, function(status){
+		
+		if(status){
+			res.redirect('/login');
+		}else{
+			res.redirect('/registration');
+		}
+	});
+		});
+
+		}
+
+		
+
 });
 
 module.exports = router;

@@ -2,7 +2,7 @@ var db = require('./db');
 
 module.exports ={
 	getById: function(id, callback){
-		var sql = "select * from member where id=?";
+		var sql = "select * from member where mid=?";
 		db.getResult(sql, [id], function(result){
 			if(result.length > 0){
 				callback(result[0]);
@@ -52,7 +52,7 @@ module.exports ={
 		});
 	},
 	delete: function(id, callback){
-		var sql = "delete from member where id=?";
+		var sql = "delete from member where mid=?";
 		db.execute(sql, [id], function(status){
 			if(status){
 				callback(true);

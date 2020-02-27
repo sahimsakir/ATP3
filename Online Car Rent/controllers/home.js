@@ -14,63 +14,24 @@ router.get('*', function(req, res, next){
 router.get('/', function(req, res){	
 	if(req.cookies['username'] != null){
 		userModel.getByUname(req.cookies['username'], function(result){
-			res.render('home/index', {user: result});
+			if(result.type=="admin"){
+			res.render('home/homead/index', {user: result});
+		}
+			else{
+				res.render('home/homemem/index', {user: result});
+			}
+		
 		});
 	}else{
 		res.redirect('/logout');
 	}
 });
 
-router.get('/alluser', function(req, res){
-	memberModel.getAll(function(results){
-		if(results.length > 0){
-			res.render('home/alluser', {userlist: results});
-		}else{
-			res.send('invalid username/password');
-		}
-	});
-});
-
-router.get('/add', function(req, res){
-	memberModel.getAll(function(results){
-		if(results.length > 0){
-			res.render('home/add', {userlist: results});
-		}else{
-			res.send('invalid username/password');
-		}
-	});
-});
-
-router.post('/add', function(req, res){
-	
-	var employee = {
-		name: req.body.ename,
-		username: req.body.username,
-		password: req.body.password,
-		type: req.body.type,
-		contact: req.body.contact
-	};
-	
-
-	
-	memberModel.insert(employee, function(status){
-		userModel.insert(employee, function(status){
-		
-		if(status){
-			res.redirect('/home/alluser');
-		}else{
-			res.redirect('/home/add/');
-		}
-	});
-});
-	});
-	
-	
 
 router.get('/edit', function(req, res){
 	memberModel.getAll(function(results){
 		if(results.length > 0){
-			res.render('home/edit', {userlist: results});
+			res.render('home/homead/edit', {member: results});
 		}else{
 			res.send('invalid username/password');
 		}
@@ -81,13 +42,13 @@ router.get('/edit', function(req, res){
 router.get('/edit/:id', function(req, res){
 	
 	memberModel.getById(req.params.id, function(result){
-		res.render('home/edit', {employee: result});
+		res.render('home/homead/edit', {member: result});
 	});
 })
 
 router.post('/edit/:id', function(req, res){
 	
-	var employee = {
+	var member = {
 		name: req.body.ename,
 		username: req.body.username,
 		password: req.body.password,
@@ -95,41 +56,25 @@ router.post('/edit/:id', function(req, res){
 		id: req.params.id,
 		contact: req.body.contact
 	};
-	console.log(employee);
-	memberModel.update(employee, function(status){
+	console.log(member);
+	memberModel.update(member, function(status){
 		if(status){
-			res.redirect('/home/alluser');
+			res.redirect('home/homead/alluser');
 		}else{
-			res.redirect('/home/edit/'+req.params.id);
+			res.redirect('home/homead/edit/'+req.params.id);
 		}
 	});
-	userModel.update(employee, function(status){
+	userModel.update(member, function(status){
 		if(status){
-			res.redirect('/home/alluser');
+			res.redirect('home/homead/alluser');
 		}else{
-			res.redirect('/home/edit/'+req.params.id);
+			res.redirect('home/homead/edit/'+req.params.id);
 		}
 	});
 });
 
 
-router.get('/delete/:id', function(req, res){
-	
-	memberModel.getById(req.params.id, function(result){
-		res.render('home/delete', {employee: result});
-	});
-});
 
-router.post('/delete/:id', function(req, res){
-	
-	memberModel.delete(req.params.id, function(status){
-		if(status){
-			res.redirect('/home/alluser');
-		}else{
-			res.redirect('/home/delete/'+req.params.id);
-		}
-	});
-})
 
 module.exports = router;
 

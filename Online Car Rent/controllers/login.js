@@ -13,6 +13,7 @@ router.post('/', function(req, res){
 			username: req.body.uname,
 			password: req.body.password
 		};
+		
 
 		userModel.validate(user, function(status){
 			if(status){

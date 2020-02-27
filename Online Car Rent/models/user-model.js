@@ -21,6 +21,16 @@ module.exports ={
 			}
 		});
 	},
+	getByType: function(user, callback){
+		var sql = "select * from user where username=?";
+		db.getResult(sql, [user.username], function(result){
+			if(result.length > 0){
+				callback(result[0]);
+			}else{
+				callback(null);
+			}
+		});
+	},
 	validate: function(user, callback){
 		var sql = "select * from user where username=? and password=?";
 		db.getResult(sql, [user.username, user.password], function(result){
@@ -41,6 +51,7 @@ module.exports ={
 			}
 		});
 	},
+	
 	insert: function(user, callback){
 		var sql = "insert into user values(?,?,?,?)";
 		db.execute(sql, [null, user.username, user.password, user.type], function(status){
